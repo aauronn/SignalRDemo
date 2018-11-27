@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  signalrdemo.webserver:
+    image: signalrdemowebserver
+    build:
+      context: .
+      dockerfile: SignalRDemo.WebServer/Dockerfile

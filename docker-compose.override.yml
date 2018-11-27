@@ -1,0 +1,21 @@
+version: '3.4'
+
+services:
+  signalrdemo.webserver:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "5005:80"
+    networks:
+    - signalrdemo-network
+
+#  chat-redis:
+#    image: redis
+#    ports:
+#      - "6379:6379"
+#    networks:
+#    - signalrdemo-network
+
+networks:
+  signalrdemo-network:
+    driver: bridge
