@@ -4,17 +4,29 @@ services:
   signalrdemo.webserver:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - "ConnectionStrings:REDIS_CONNECTIONSTRING=chat-redis"
+      - "ConnectionStrings:SRDemoContext=Server=sqlserver;Database=SRDemoContext;User Id=sa;Password=yourStrong(!)Password;"
     ports:
       - "5005:80"
     networks:
     - signalrdemo-network
 
-#  chat-redis:
-#    image: redis
-#    ports:
-#      - "6379:6379"
-#    networks:
-#    - signalrdemo-network
+  chat-redis:
+    image: redis
+    ports:
+      - "6379:6379"
+    networks:
+    - signalrdemo-network
+
+  sqlserver:
+    image: microsoft/mssql-server-linux:2017-CU8
+    environment:
+      SA_PASSWORD: "yourStrong(!)Password"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    networks:
+    - signalrdemo-network
 
 networks:
   signalrdemo-network:
