@@ -9,6 +9,15 @@ var params = JSON.stringify({ "userIPAddress": "10.10.10.10", "userMachineName":
 var token = "";
 var ServerUrl = "http://localhost:5005";
 
+function init() {
+    var userIPAddress = "10.10.10.10";
+    var userMachineName = "MachineName";
+    var userName = document.getElementById("UserNameInput0").value;
+
+    params = JSON.stringify({ "userIPAddress": userIPAddress, "userMachineName": userMachineName, "username": userName });
+
+    GetToken();
+}
 
 async function GetToken() {
     return await fetch(`${ServerUrl}/api/account/createToken`, {
@@ -34,7 +43,7 @@ async function GetToken() {
         });
 }
 
-GetToken();
+
 const connection = new signalR.HubConnectionBuilder()
     .withUrl("/chatHub", {
         skipNegotiation: true,
@@ -71,7 +80,6 @@ function connect() {
     });
 
     connection.on("ReceiveDirectMessage", (user, message) => {
-        debugger
         const msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         const encodedMsg = "Private Message From: " + user + " says " + msg;
         const li = document.createElement("li");
@@ -81,7 +89,8 @@ function connect() {
 
     
 
-    connection.start().catch(err =>console.error(err.toString()));
+    connection.start()
+              .catch(err => console.error(err.toString()));
 
     document.getElementById("sendButton").addEventListener("click", event => {
         const user = document.getElementById("userInput").value;
