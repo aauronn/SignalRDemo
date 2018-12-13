@@ -47,7 +47,26 @@ namespace SignalRDemo.WebServer.Entities
             }
 
             ///////
+            var Principal2 = await _userManager.FindByEmailAsync("test@mail.com");
 
+            if (Principal2 == null)
+            {
+                Principal2 = new Principal
+                {
+                    FirstName = "test",
+                    LastName = "test",
+                    UserName = "test",
+                    Email = "test@mail.com"
+                };
+
+                var result2 = await _userManager.CreateAsync(Principal2, "P@ssw0rd!");
+
+                if (result2 != IdentityResult.Success)
+                {
+                    throw new InvalidOperationException("Failed to create default user");
+                }
+
+            }
 
             ///////
 
@@ -60,7 +79,7 @@ namespace SignalRDemo.WebServer.Entities
                     FirstName = "Durante",
                     LastName = "George",
                     UserName = "dgeorge",
-                    Email = "csuser_test@mail.com"
+                    Email = "dgeorge@mail.com"
                 };
 
                 var result3 = await _userManager.CreateAsync(Principal3, "P@ssw0rd!");

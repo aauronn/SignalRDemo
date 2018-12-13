@@ -48,9 +48,9 @@ namespace SignalRDemo.WebServer
                 cfg.User.RequireUniqueEmail = true;
 
             }).AddEntityFrameworkStores<SRDemoContext>()
-            .AddDefaultTokenProviders();
+              .AddDefaultTokenProviders();
 
-
+            // Add authentication 
             services.AddAuthentication(cfg =>
             {
                 cfg.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -116,21 +116,14 @@ namespace SignalRDemo.WebServer
                        .AllowCredentials();
             }));
 
-            //var RedisCS = "http://srediscoredemo.ho-c1.caas.comcast.net/:6379,password=ic1fBnrpOPwmankQ";
-
+            
+            // Redis connection string
             var redisConnectionString = Configuration["ConnectionStrings:REDIS_CONNECTIONSTRING"]; ;
 
             // Add SignalR
-            services.AddSignalR()
-                    .AddMessagePackProtocol()
-                    .AddRedis(redisConnectionString)
-                    //.AddMessagePackProtocol(options =>
-                    //{
-                    //    options.FormatterResolvers = new List<MessagePack.IFormatterResolver>()
-                    //    {
-                    //        MessagePack.Resolvers.StandardResolver.Instance
-                    //    };
-                    //})
+            services.AddSignalR()                       // Add SignalR to services
+                    .AddMessagePackProtocol()           // Add MessagePack Protocol to SignalR
+                    .AddRedis(redisConnectionString)    // Add Redis backplane
                     ;
 
             // Add MVC Service
@@ -142,12 +135,12 @@ namespace SignalRDemo.WebServer
                 //}
             })
             .AddMvcOptions(o =>
-                o.OutputFormatters.Add(new XmlDataContractSerializerOutputFormatter())
+                o.OutputFormatters.Add(new XmlDataContractSerializerOutputFormatter())      // Add XML support as response
             )
             .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
 
-            // Add User Provider for SignalR
+            // Add User Provider for SignalR - This allow us to return user's identity from user's connection
             services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
 
             // Add CityInfo Seeder

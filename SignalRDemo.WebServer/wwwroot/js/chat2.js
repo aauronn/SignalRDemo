@@ -25,32 +25,26 @@ async function GetToken() {
         body: params,
         headers: {
             "Content-Type": "application/json; charset=utf-8",
-            //"Authorization": "Basic QUNjZGJmNzQxZGIyZDA2MTUxMDg5MWYwNTllOWMzMGEyMDo0NGRhOWJkNzA0MzI4NTJhN2M4MzEyMTRmNDhiYzBlZA=="
-            // "Content-Type": "application/x-www-form-urlencoded",
         }
-    })
-        .then(function (response) {
-            return response.json();
-        })
-        .then((data) => {
-            token = data.token;
-        })
-        .then(() => {
-            connect();
-        })
-        .catch((error) => {
-            var errorMessage = "Invalid Authentication"
-        });
+    }).then(function (response) {                           // Get json response from server with Token
+        return response.json();
+    }).then((data) => {
+        token = data.token;                                 // Pass token to token variable
+    }).then(() => {
+        connect();                                          // Connect to Hub
+    }).catch((error) => {
+        var errorMessage = "Invalid Authentication"
+    });
 }
 
 
 const connection = new signalR.HubConnectionBuilder()
-    .withUrl("/chatHub", {
-        skipNegotiation: true,
-        transport: signalR.HttpTransportType.WebSockets,
-        accessTokenFactory: () => token
+    .withUrl("/chatHub", {                                  // Relative Hub url
+        skipNegotiation: true,                              // By skipping negotiation, it avoids sticky sessions
+        transport: signalR.HttpTransportType.WebSockets,    // Use websockets as transports
+        accessTokenFactory: () => token                     // Pass token to hub to authenticate.
     })
-    .withHubProtocol(new signalR.protocols.msgpack.MessagePackHubProtocol())
+    .withHubProtocol(new signalR.protocols.msgpack.MessagePackHubProtocol()) // Define what HubProtocol to use. Default is JSON, the other is MessagePack
     .build();
 
 function connect() {
@@ -87,10 +81,10 @@ function connect() {
         document.getElementById("messagesList").appendChild(li);
     });
 
-    
+
 
     connection.start()
-              .catch(err => console.error(err.toString()));
+        .catch(err => console.error(err.toString()));
 
     document.getElementById("sendButton").addEventListener("click", event => {
         const user = document.getElementById("userInput").value;
